@@ -4,6 +4,7 @@ scup2020_imgs/
 *.pptx
 *.docx
 *.m
+*.txt
 
 # Prerequisites
 *.d
