@@ -1,12 +1,16 @@
+//UART2をSHとのシリアル通信に使う
+//SHから読み込んだデータをUART0でArduinoIDEシリアルモニタに送信
+HardwareSerial Serial2(2);
 
 long inputs[13];//シリアル読込格納配列
-int count;
+int count; //格納用カウント変数
 long pend[4];//シリアルデコード後の倒立振子の変数
 
 void setup() {
 
 // シリアルポートを57600 bpsで初期化
   Serial.begin(57600);
+  Serial2.begin(57600);
 
   count = 0;
 
@@ -31,9 +35,9 @@ void loop() {
 //  Serial.print("count=");
 //  Serial.println(count);
 
-  while(Serial.available() > 0){
+  while(Serial2.available() > 0){
 
-    input_s = Serial.read();
+    input_s = Serial2.read();
 
     if(input_s != -1 && (input_s != 0x0a || count < 13)){
 
