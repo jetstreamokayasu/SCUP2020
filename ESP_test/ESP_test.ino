@@ -1,6 +1,8 @@
+#include <string.h>
+
 //UART2をSHとのシリアル通信に使う
 //SHから読み込んだデータをUART0でArduinoIDEシリアルモニタに送信
-HardwareSerial Serial2(2);
+//HardwareSerial Serial2(2);
 
 long inputs[13];//シリアル読込格納配列
 int count; //格納用カウント変数
@@ -8,7 +10,12 @@ long pend[4];//シリアルデコード後の倒立振子の変数
 
 void setup() {
 
-// シリアルポートを57600 bpsで初期化
+  double output=0.1;
+  byte binary[8];
+
+  memcpy(binary, &output, sizeof(output));
+
+  // シリアルポートを57600 bpsで初期化
   Serial.begin(57600);
   Serial2.begin(57600);
 
@@ -22,7 +29,13 @@ void setup() {
   //倒立振子変数格納配列初期化
   for(int i=0; i < 4; i++){
     pend[i]=0;
-  }
+  }  
+
+    for(int j=7; j>=0; j--){
+
+    Serial2.write(binary[j]);
+    
+   }
 
 }
 
@@ -30,8 +43,15 @@ void loop() {
 
   long input_s; //シリアル読込変数
   int seri_d;  //serial_decodeの返り値を入れる
+  //byte temp=0x30;
 
-//  Serial.println(Serial.available());
+  //delay(500);
+
+//  Serial.println(Serial2.available());
+//
+//  input_s = Serial2.read();
+//  Serial.print("input_s=");
+//  Serial.println(input_s);
 //  Serial.print("count=");
 //  Serial.println(count);
 
@@ -39,7 +59,7 @@ void loop() {
 
     input_s = Serial2.read();
 
-    if(input_s != -1 && (input_s != 0x0a || count < 13)){
+    if(input_s != -1 && input_s != 0x0a && count < 13){
 
       Serial.print("count=");
       Serial.print(count); 
@@ -67,7 +87,19 @@ void loop() {
       
     }
     
-  }  
+  }
+
+//  double output;
+//  byte binary[8];
+//
+//  output=0.1;
+//  memcpy(binary, &output, sizeof(output));    
+//
+//  for(int j=7; j>=0; j--){
+//
+//    Serial.write(binary[j]);
+//    
+//  }
 
 }
 
@@ -143,3 +175,22 @@ int serial_decode(){
   return 0;
   
 }
+
+////受け取ったdouble型変数を1byteずつに分割し、シリアルで送る
+//void send_serial(double output){
+//
+//  byte d_divide[8]; //doubleを8bit=1byteずつ格納する配列
+//
+//  for(int i=0; i<8; i++){
+//
+//    d_divide[i]=(output >> 8*i) & 255; //0b11111111
+//    
+//  }
+//
+//  for(int j=7; j>0; j--){
+//
+//    Serial.write(d_divite[j]);
+//    
+//  }
+//  
+//}
